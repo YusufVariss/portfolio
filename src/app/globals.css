@@ -21,12 +21,14 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 @keyframes borderAnimation {
@@ -116,4 +118,57 @@ body {
                -2px -2px 5px rgba(255, 255, 255, 0.3),
                0 0 20px rgba(250, 204, 21, 0.4);
   transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Remove focus outline everywhere */
+* {
+  outline: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus,
+div:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove text cursor everywhere except inputs */
+* {
+  cursor: default !important;
+}
+
+input, 
+textarea {
+  cursor: text !important;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+button, 
+a, 
+.cursor-pointer {
+  cursor: pointer !important;
 }

@@ -1,0 +1,178 @@
+/* Folder Stack Styles */
+.folder-stack-container {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  overflow-x: hidden;
+}
+
+.folder-item {
+  transform-style: preserve-3d;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.folder-item:hover {
+  transform: translateZ(20px) rotateY(5deg);
+}
+
+.folder-active {
+  animation: folderGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes folderGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(250, 204, 21, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(250, 204, 21, 0.6);
+  }
+}
+
+/* Folder tab animation */
+.folder-tab {
+  position: relative;
+  overflow: hidden;
+}
+
+.folder-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.folder-item:hover .folder-tab::before {
+  left: 100%;
+}
+
+/* Floating elements */
+.floating-element {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Folder indicators */
+.folder-indicator {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.folder-indicator:hover {
+  transform: scale(1.2);
+}
+
+.folder-indicator.active {
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+}
+
+/* Technology tags */
+.tech-tag {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-tag:hover {
+  transform: translateY(-1px);
+}
+
+/* Folder stack responsive */
+@media (max-width: 768px) {
+  .folder-stack-container {
+    transform: scale(0.8);
+  }
+  
+  .floating-element {
+    display: none;
+  }
+  
+  .nav-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .nav-circle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+/* Folder rotation animation */
+@keyframes folderRotate {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(2deg) scale(1.02);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.folder-item:nth-child(odd) {
+  animation: folderRotate 4s ease-in-out infinite;
+}
+
+.folder-item:nth-child(even) {
+  animation: folderRotate 4s ease-in-out infinite reverse;
+}
+
+/* Active folder pulse */
+@keyframes activePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(250, 204, 21, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
+  }
+}
+
+.folder-active-indicator {
+  animation: activePulse 2s infinite;
+}
+
+/* Navigation circles */
+.nav-circle {
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+
+.nav-circle:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border-color: rgba(250, 204, 21, 0.3);
+}
+
+.nav-circle:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Circle glow effect */
+@keyframes circleGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(250, 204, 21, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(250, 204, 21, 0.3);
+  }
+}
+
+.nav-circle:hover {
+  animation: circleGlow 1.5s ease-in-out infinite;
+}

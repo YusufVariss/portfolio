@@ -3,13 +3,21 @@
 import { useState, useEffect } from "react";
 import AnimatedSection from "./components/AnimatedSection";
 import LoadingScreen from "./components/LoadingScreen";
+import GradientText from "./components/GradientText";
 import RotatingText from "./components/RotatingText";
 import ElectricBorder from "./components/ElectricBorder";
 import GlowButton from "./components/GlowButton";
 import BlurText from "./components/BlurText";
 import CardNav from "./components/CardNav";
-import CardSwap from "./components/CardSwap";
-import AutoCardSwap, { Card } from "./components/AutoCardSwap";
+import CircularGallery from "../components/CircularGallery";
+import LightRays from "../components/LightRays";
+import "./components/ProjectCarousel.css";
+import "./components/CircularGallery.css";
+import "./components/CurvedCardDesign.css";
+import "./components/RainbowArcDesign.css";
+import "./components/ScrollStackDesign.css";
+import "./components/SpotlightCardDesign.css";
+import "./components/CardSwap.css";
 
 // Metadata can still be defined in a client component
 // export const metadata: Metadata = {
@@ -21,414 +29,365 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [showNavBar, setShowNavBar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [currentSection, setCurrentSection] = useState('home');
+  const [selectedCard, setSelectedCard] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate a loading time
-    const loadingTimer = setTimeout(() => setIsLoading(false), 2000); // 2 seconds
-
-    return () => clearTimeout(loadingTimer);
-  }, []);
-
-  useEffect(() => {
-    // After loading is finished, start the mount animation for the hero section
-    if (!isLoading) {
-      const mountTimer = setTimeout(() => setIsMounted(true), 200);
-      return () => clearTimeout(mountTimer);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
-    let lastScrollY = 0;
+    setIsMounted(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
 
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
+      const currentScrollY = window.scrollY;
       
-      console.log('Scroll position:', scrollTop, 'Header visible:', isHeaderVisible);
+      setIsScrolled(currentScrollY > 100);
       
-      // 100px scroll sonrası stil değişiklikleri
-      setIsScrolled(scrollTop > 100);
+      // Check which section is currently visible
+      const sections = ['home', 'projects', 'about', 'contact'];
+      const windowHeight = window.innerHeight;
       
-      // Header görünürlük kontrolü
-      if (scrollTop <= 50) {
-        // Ana sayfa (top 50px) - her zaman göster
-        console.log('At top, showing header');
-        setIsHeaderVisible(true);
-      } else if (scrollTop > lastScrollY && scrollTop > 100) {
-        // Aşağı scroll ve 100px'den fazla - gizle
-        console.log('Scrolling down, hiding header');
-        setIsHeaderVisible(false);
-      } else if (scrollTop < lastScrollY) {
-        // Yukarı scroll - göster
-        console.log('Scrolling up, showing header');
-        setIsHeaderVisible(true);
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
+            setCurrentSection(sectionId);
+            break;
+          }
+        }
       }
       
-      lastScrollY = scrollTop;
+      // Always show navigation on home section
+      if (currentSection === 'home') {
+        setShowNavBar(true);
+      } else if (currentScrollY < lastScrollY || currentScrollY < 50) {
+        // Yukarı scroll veya üst kısımda - göster
+        setShowNavBar(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        // Aşağı scroll ve 50px'den fazla - gizle
+        setShowNavBar(false);
+      }
+      
+      setLastScrollY(currentScrollY);
     };
 
-    // İlk yükleme için pozisyon kontrolü
-    const initialScrollTop = window.scrollY;
-    setIsScrolled(initialScrollTop > 100);
-    setIsHeaderVisible(true); // Ana sayfada başlangıçta göster
-    console.log('Initial load - Header visible set to true');
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  if (isLoading) {
+    return <LoadingScreen isLoading={isLoading} />;
+  }
 
   return (
-    <div className="bg-gray-900 text-white font-sans">
-      <LoadingScreen isLoading={isLoading} />
-
-      <CardNav
-        logoComponent={<span className="text-lg font-bold text-white">Yusuf Varış</span>}
-        className={`transition-all duration-1000 ease-out ${
-          isLoading 
-            ? 'opacity-0 -translate-y-10' 
-            : isHeaderVisible 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-100 -translate-y-20'
-        }`}
+    <div className="bg-gray-900 text-white font-sans overflow-x-hidden relative">
+      {/* Background Light Rays */}
+      <LightRays count={16} />
+      
+      {/* Card Navigation */}
+      <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-in-out ${
+        showNavBar 
+          ? 'transform -translate-x-1/2 translate-y-0 opacity-100' 
+          : 'transform -translate-x-1/2 -translate-y-full opacity-0'
+      }`}>
+        <CardNav
           items={[
             {
-              label: "About",
-              bgColor: "#0D0716",
-              textColor: "#fff",
+              label: "Ana Sayfa",
+              bgColor: "#1f2937",
+              textColor: "#fbbf24",
               links: [
-                { 
-                  label: "About Me", 
-                  ariaLabel: "About Me",
-                  onClick: () => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
-                },
-                { 
-                  label: "Experience", 
-                  ariaLabel: "Experience",
-                  onClick: () => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
-                }
+                { label: "Hoş Geldin", ariaLabel: "Ana sayfa", href: "#home" }
               ]
             },
             {
-              label: "Projects", 
-              bgColor: "#170D27",
-              textColor: "#fff",
+              label: "Hakkımda",
+              bgColor: "#374151",
+              textColor: "#fbbf24",
               links: [
-                { 
-                  label: "Featured", 
-                  ariaLabel: "Featured Projects",
-                  onClick: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
-                },
-                { 
-                  label: "All Projects", 
-                  ariaLabel: "All Projects",
-                  onClick: () => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
-                }
+                { label: "Deneyim", ariaLabel: "Deneyimlerim", href: "#about" },
+                { label: "Yetenekler", ariaLabel: "Yeteneklerim", href: "#about" }
               ]
             },
             {
-              label: "Contact",
-              bgColor: "#271E37", 
-              textColor: "#fff",
+              label: "Projeler",
+              bgColor: "#4b5563",
+              textColor: "#fbbf24",
               links: [
-                { 
-                  label: "Email", 
-                  ariaLabel: "Email me",
-                  onClick: () => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' })
-                },
-                { 
-                  label: "Skills", 
-                  ariaLabel: "My Skills",
-                  onClick: () => document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' })
-                }
+                { label: "Portfolyo", ariaLabel: "Projelerim", href: "#projects" },
+                { label: "İletişim", ariaLabel: "İletişim", href: "#contact" }
               ]
             }
           ]}
-          baseColor="rgba(255, 255, 255, 0.9)"
-          menuColor="#000"
+          logoComponent={
+            <a href="#home" className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-blue-600 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition-opacity">
+              Yusuf Varış
+            </a>
+          }
+          baseColor="rgba(17, 24, 39, 0.95)"
+          menuColor="#fbbf24"
           buttonBgColor="#fbbf24"
-          buttonTextColor="#000"
+          buttonTextColor="#111827"
         />
+      </div>
 
-      {/* Main Content */}
-      <main className={`transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        {/* Hero Section */}
-        <section id="home" className="relative min-h-screen w-full">
-          {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800">
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 to-transparent"></div>
-          </div>
-          
-          {/* Main Content */}
-          <div className="relative z-10 h-screen flex items-center">
+      {/* Hero Section */}
+      <section id="home" className="min-h-screen flex items-center justify-center relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex flex-col lg:flex-row items-center justify-between">
             {/* Left Side - Text Content */}
-            <div className="w-1/2 pl-16 pr-8">
-              <div className={`transition-all duration-1000 ease-out ${isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                <BlurText
-                  text="Hello, I'm Yusuf"
-                  className="text-5xl md:text-6xl font-bold text-white mb-6"
-                  delay={100}
-                  animateBy="words"
-                  direction="top"
-                />
-                <BlurText
-                  text="Software Developer"
-                  className="text-2xl md:text-3xl font-semibold text-yellow-400 mb-8"
-                  delay={150}
-                  animateBy="words"
-                  direction="top"
-                />
-                <BlurText
-                  text="I create user-friendly and efficient solutions with modern web technologies. Besides coding, I love learning new things and constantly improving myself."
-                  className="text-gray-300 text-xl leading-relaxed max-w-xl"
-                  delay={80}
-                  animateBy="words"
-                  direction="top"
-                />
+            <div className="w-full lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0 lg:pr-16">
+              <div className="space-y-6">
+                <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+                  <GradientText
+                    colors={["#fbbf24", "#f59e0b", "#d97706"]}
+                  >
+                    Merhaba, Ben Yusuf
+                  </GradientText>
+                </h1>
+                <div className="text-2xl lg:text-3xl text-gray-300">
+                  <span>Yazılım Geliştirici</span>
+                </div>
+                <p className="text-lg text-gray-400 max-w-lg mx-auto lg:mx-0">
+                  Modern web teknolojileri ile kullanıcı dostu, performanslı ve ölçeklenebilir uygulamalar geliştiriyorum.
+                </p>
               </div>
             </div>
 
-            {/* Right Side - Changing Cards */}
-            <div className="w-1/2 flex items-start justify-center pt-20">
-              <AutoCardSwap
-                width={350}
-                height={250}
-                cardDistance={60}
-                verticalDistance={70}
-                delay={3000}
-                pauseOnHover={true}
-              >
-                <Card>
-                  <div className="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 text-yellow-400 mx-auto mb-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-                    </svg>
-                    <h3 className="text-white text-2xl font-bold mb-3">Frontend</h3>
-                    <p className="text-yellow-400 text-lg">React, Next.js, TypeScript</p>
-                    <div className="flex flex-wrap gap-2 justify-center mt-4">
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">React</span>
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">Next.js</span>
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">TypeScript</span>
+            {/* Right Side - Skills Gallery */}
+            <div className="w-1/2 flex items-center justify-center pt-8">
+              <CircularGallery
+                items={[
+                  {
+                    id: 1,
+                    icon: "⚛️",
+                    title: "Frontend Development",
+                    skills: ["React", "Next.js", "HTML", "CSS", "JavaScript"],
+                    backgroundColor: "linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(251, 191, 36, 0.3) 100%)"
+                  },
+                  {
+                    id: 2,
+                    icon: "🔧",
+                    title: "Backend Development", 
+                    skills: ["C#", "ASP.NET", "Node.js"],
+                    backgroundColor: "linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(251, 191, 36, 0.3) 100%)"
+                  },
+                  {
+                    id: 3,
+                    icon: "📱",
+                    title: "Mobile Development",
+                    skills: ["React Native", "iOS", "Android"],
+                    backgroundColor: "linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(251, 191, 36, 0.3) 100%)"
+                  },
+                  {
+                    id: 4,
+                    icon: "🗄️",
+                    title: "Database",
+                    skills: ["MSSQL", "MongoDB", "Firebase", "SQLite"],
+                    backgroundColor: "linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(251, 191, 36, 0.3) 100%)"
+                  }
+                ]}
+                radius={160}
+                autoRotate={true}
+                rotationSpeed={0.2}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section - Full Width */}
+      <AnimatedSection>
+        <section id="about" className="min-h-screen py-20 w-full bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-4xl font-bold mb-16 text-yellow-400 text-center">Hakkımda</h2>
+            
+            <div className="flex transition-all duration-500 ease-in-out">
+              {/* Left Side - Cards */}
+              <div className={`transition-all duration-500 ease-in-out ${
+                selectedCard ? 'w-1/2 pr-4' : 'w-full'
+              }`}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Ben Kimim Kartı */}
+                  <div 
+                    onClick={() => setSelectedCard(selectedCard === 'who' ? null : 'who')}
+                    className={`bg-black/20 backdrop-blur-sm border rounded-2xl p-8 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                      selectedCard === 'who' 
+                        ? 'border-yellow-400/60 shadow-lg shadow-yellow-400/30' 
+                        : 'border-yellow-400/20 hover:border-yellow-400/40'
+                    }`}
+                  >
+                    <div className="text-center h-full flex flex-col justify-center items-center">
+                      <div className="text-6xl mb-6">👨‍💻</div>
+                      <h3 className="text-2xl font-bold text-yellow-400">Ben Kimim?</h3>
                     </div>
                   </div>
-                </Card>
-                <Card>
-                  <div className="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 text-yellow-400 mx-auto mb-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3" />
-                    </svg>
-                    <h3 className="text-white text-2xl font-bold mb-3">Backend</h3>
-                    <p className="text-yellow-400 text-lg">Node.js, Python, APIs</p>
-                    <div className="flex flex-wrap gap-2 justify-center mt-4">
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">Node.js</span>
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">Python</span>
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">APIs</span>
+
+                  {/* Deneyim Kartı */}
+                  <div 
+                    onClick={() => setSelectedCard(selectedCard === 'experience' ? null : 'experience')}
+                    className={`bg-black/20 backdrop-blur-sm border rounded-2xl p-8 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                      selectedCard === 'experience' 
+                        ? 'border-yellow-400/60 shadow-lg shadow-yellow-400/30' 
+                        : 'border-yellow-400/20 hover:border-yellow-400/40'
+                    }`}
+                  >
+                    <div className="text-center h-full flex flex-col justify-center items-center">
+                      <div className="text-6xl mb-6">💼</div>
+                      <h3 className="text-2xl font-bold text-yellow-400">Deneyimim</h3>
                     </div>
                   </div>
-                </Card>
-                <Card>
-                  <div className="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 text-yellow-400 mx-auto mb-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-                    </svg>
-                    <h3 className="text-white text-2xl font-bold mb-3">Mobile</h3>
-                    <p className="text-yellow-400 text-lg">React Native, Flutter</p>
-                    <div className="flex flex-wrap gap-2 justify-center mt-4">
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">React Native</span>
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">Flutter</span>
+
+                  {/* Teknolojiler Kartı */}
+                  <div 
+                    onClick={() => setSelectedCard(selectedCard === 'tech' ? null : 'tech')}
+                    className={`bg-black/20 backdrop-blur-sm border rounded-2xl p-8 cursor-pointer transition-all duration-300 hover:scale-105 ${
+                      selectedCard === 'tech' 
+                        ? 'border-yellow-400/60 shadow-lg shadow-yellow-400/30' 
+                        : 'border-yellow-400/20 hover:border-yellow-400/40'
+                    }`}
+                  >
+                    <div className="text-center h-full flex flex-col justify-center items-center">
+                      <div className="text-6xl mb-6">🚀</div>
+                      <h3 className="text-2xl font-bold text-yellow-400">Teknolojilerim</h3>
                     </div>
                   </div>
-                </Card>
-                <Card>
-                  <div className="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-16 h-16 text-yellow-400 mx-auto mb-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694 4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375" />
-                    </svg>
-                    <h3 className="text-white text-2xl font-bold mb-3">Database</h3>
-                    <p className="text-yellow-400 text-lg">MongoDB, PostgreSQL</p>
-                    <div className="flex flex-wrap gap-2 justify-center mt-4">
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">MongoDB</span>
-                      <span className="px-3 py-1 bg-yellow-400/20 rounded-full text-yellow-400 text-sm">PostgreSQL</span>
+                </div>
+              </div>
+
+              {/* Right Side - Detail Panel */}
+              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                selectedCard ? 'w-1/2 pl-4' : 'w-0'
+              }`}>
+                {selectedCard && (
+                  <div className="bg-black/30 backdrop-blur-md border border-yellow-400/30 rounded-2xl p-8 h-full">
+                    <div className="flex justify-between items-start mb-6">
+                      <h3 className="text-3xl font-bold text-yellow-400">
+                        {selectedCard === 'who' && 'Ben Kimim?'}
+                        {selectedCard === 'experience' && 'Deneyimlerim'}  
+                        {selectedCard === 'tech' && 'Teknoloji Yığınım'}
+                      </h3>
+                      <button
+                        onClick={() => setSelectedCard(null)}
+                        className="text-yellow-400 hover:text-yellow-300 text-2xl"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-4 text-gray-300 leading-relaxed">
+                      {selectedCard === 'who' && (
+                        <>
+                          <p>Merhaba! Ben <span className="text-yellow-400 font-semibold">Yusuf Varış</span>. Yazılım geliştirme dünyasında tutkuyla çalışan bir geliştiriciyim.</p>
+                          <p>Teknolojiye olan merakım ve sürekli öğrenme isteğim sayesinde, her gün kendimi geliştirmeye devam ediyorum. Karmaşık problemleri çözmek ve yaratıcı çözümler üretmek beni motive ediyor.</p>
+                          <p>Kod yazmak benim için sadece bir meslek değil, aynı zamanda bir sanat formu. Her projeyi bir başyapıt yaratma fırsatı olarak görüyorum.</p>
+                        </>
+                      )}
+                      
+                      {selectedCard === 'experience' && (
+                        <>
+                          <p><span className="text-yellow-400 font-semibold">5+ yıllık</span> yazılım geliştirme deneyimim boyunca onlarca proje geliştirdim.</p>
+                          <p>Web uygulamaları, mobil uygulamalar ve API'ler geliştirme konusunda uzmanlaştım. Modern web teknolojileriyle kullanıcı dostu, performanslı ve ölçeklenebilir uygulamalar yaratıyorum.</p>
+                          <p>Proje yönetiminden deployment'a kadar yazılım geliştirme sürecinin her aşamasında deneyim sahibiyim.</p>
+                          <p>Takım çalışması ve mentörlük konularında da aktif rol alıyorum.</p>
+                        </>
+                      )}
+                      
+                      {selectedCard === 'tech' && (
+                        <>
+                          <div className="mb-4">
+                            <h4 className="text-yellow-400 font-semibold mb-2">Frontend:</h4>
+                            <p>React.js, Next.js, TypeScript, HTML5, CSS3, Tailwind CSS ile modern ve responsive kullanıcı arayüzleri geliştiriyorum.</p>
+                          </div>
+                          <div className="mb-4">
+                            <h4 className="text-yellow-400 font-semibold mb-2">Backend:</h4>
+                            <p>Node.js, C#, ASP.NET Core ile güçlü ve ölçeklenebilir API'ler ve servisler yazıyorum.</p>
+                          </div>
+                          <div className="mb-4">
+                            <h4 className="text-yellow-400 font-semibold mb-2">Mobile:</h4>
+                            <p>React Native ile iOS ve Android platformları için cross-platform uygulamalar geliştiriyorum.</p>
+                          </div>
+                          <div>
+                            <h4 className="text-yellow-400 font-semibold mb-2">Database:</h4>
+                            <p>MSSQL, MongoDB, Firebase ve SQLite ile veri yönetimi konusunda uzmanım.</p>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
-                </Card>
-              </AutoCardSwap>
+                )}
+              </div>
             </div>
           </div>
         </section>
+      </AnimatedSection>
 
-        {/* About Section - Full Width */}
-        <AnimatedSection>
-          <section id="about" className="min-h-screen w-full flex items-center justify-center bg-gray-900 px-8 md:px-16">
-            <div className="w-full max-w-6xl flex flex-col md:flex-row items-center justify-center text-center md:text-left md:space-x-16">
-              {/* Left Side: Photo */}
-              <div className="flex-shrink-0 mb-8 md:mb-0">
-                <img 
-                  className="w-48 h-48 rounded-full object-cover shadow-lg"
-                  src="https://picsum.photos/400"
-                  alt="Yusuf Varış portre"
-                />
-              </div>
-              {/* Right Side: Text Content */}
-              <div className="flex-grow max-w-2xl">
-                <h2 className="text-5xl font-bold text-yellow-400 mb-6">About Me</h2>
-                <div className="text-gray-300 space-y-4 text-lg">
-                  <p>
-                    Hello! With my passion for technology and software, I enjoy turning ideas into reality.
-                    I particularly work with technologies like React, Next.js, and Node.js.
-                  </p>
-                  <p>
-                    I'm team-oriented, problem-solving focused, and always aim for the best user experience.
-                    In my free time, I contribute to open-source projects and research new technologies.
-                  </p>
-                </div>
+      {/* Projelerim Section - Full Width */}
+      <AnimatedSection>
+        <section id="projects" className="min-h-screen py-20 w-full bg-gray-900">
+          <h2 className="text-4xl font-bold text-center mb-12 text-yellow-400">Projelerim</h2>
+          <div className="px-8">
+            <div className="text-center text-white">
+              <p className="text-lg">Projelerim yakında eklenecek...</p>
+            </div>
+          </div>
+        </section>
+      </AnimatedSection>
+
+
+      {/* Contact Section - Full Width */}
+      <AnimatedSection>
+        <section id="contact" className="min-h-screen py-20 w-full bg-gray-900">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-4xl font-bold mb-12 text-yellow-400">İletişim</h2>
+            <div className="space-y-8">
+              <p className="text-lg text-gray-300">
+                Projeleriniz için benimle iletişime geçebilirsiniz.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <GlowButton
+                  color="#fbbf24"
+                >
+                  <a href="mailto:email@example.com">Email Gönder</a>
+                </GlowButton>
+                <GlowButton
+                  color="#3b82f6"
+                >
+                  <a href="https://linkedin.com/in/yusuf">LinkedIn</a>
+                </GlowButton>
               </div>
             </div>
-          </section>
-        </AnimatedSection>
-
-        {/* Projelerim Section - Full Width */}
-        <AnimatedSection>
-          <section id="projects" className="min-h-screen py-20 w-full bg-gray-900">
-            <h2 className="text-4xl font-bold text-center mb-12 text-yellow-400">Projelerim</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-8">
-                {/* Proje 1 */}
-                <ElectricBorder>
-                  <div className="bg-gray-800 rounded-lg flex flex-col h-[500px]">
-                    <div className="h-60 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-t-lg flex items-center justify-center">
-                      <div className="text-white text-6xl">📱</div>
-                    </div>
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-xl font-bold mb-3 text-cyan-400">E-Ticaret Mobil App</h3>
-                      <p className="text-gray-400 text-sm flex-grow">React Native ile geliştirilen modern e-ticaret uygulaması. Firebase backend, kullanıcı dostu arayüz ve güvenli ödeme sistemi.</p>
-                      <div className="mt-4">
-                        <GlowButton color="#22d3ee" size="2px" radius="6px">
-                          Görüntüle
-                        </GlowButton>
-                      </div>
-                    </div>
-                  </div>
-                </ElectricBorder>
-                {/* Proje 2 */}
-                <ElectricBorder>
-                  <div className="bg-gray-800 rounded-lg flex flex-col h-[500px]">
-                    <div className="h-60 bg-gradient-to-br from-green-400 to-emerald-600 rounded-t-lg flex items-center justify-center">
-                      <div className="text-white text-6xl">💼</div>
-                    </div>
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-xl font-bold mb-3 text-cyan-400">Portfolio Websitesi</h3>
-                      <p className="text-gray-400 text-sm flex-grow">Next.js ve Tailwind CSS kullanarak geliştirilen responsive portfolio sitesi. Modern animasyonlar ve optimizasyon.</p>
-                      <div className="mt-4">
-                        <GlowButton color="#10b981" size="2px" radius="6px">
-                          Görüntüle
-                        </GlowButton>
-                      </div>
-                    </div>
-                  </div>
-                </ElectricBorder>
-                {/* Proje 3 */}
-                <ElectricBorder>
-                  <div className="bg-gray-800 rounded-lg flex flex-col h-[500px]">
-                    <div className="h-60 bg-gradient-to-br from-purple-400 to-pink-600 rounded-t-lg flex items-center justify-center">
-                      <div className="text-white text-6xl">🎵</div>
-                    </div>
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-xl font-bold mb-3 text-cyan-400">Müzik Çalar App</h3>
-                      <p className="text-gray-400 text-sm flex-grow">Flutter ile geliştirilmiş çevrimiçi müzik çalar uygulaması. Spotify API entegrasyonu ve özel çalma listeleri.</p>
-                      <div className="mt-4">
-                        <GlowButton color="#a855f7" size="2px" radius="6px">
-                          Görüntüle
-                        </GlowButton>
-                      </div>
-                    </div>
-                  </div>
-                </ElectricBorder>
-                {/* Proje 4 */}
-                <ElectricBorder>
-                  <div className="bg-gray-800 rounded-lg flex flex-col h-[500px]">
-                    <div className="h-60 bg-gradient-to-br from-orange-400 to-red-600 rounded-t-lg flex items-center justify-center">
-                      <div className="text-white text-6xl">🔧</div>
-                    </div>
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-xl font-bold mb-3 text-cyan-400">Stok Takip Sistemi</h3>
-                      <p className="text-gray-400 text-sm flex-grow">Node.js ve MongoDB ile geliştirilen web tabanlı stok yönetim sistemi. RESTful API ve gerçek zamanlı güncellemeler.</p>
-                      <div className="mt-4">
-                        <GlowButton color="#f97316" size="2px" radius="6px">
-                          Görüntüle
-                        </GlowButton>
-                      </div>
-                    </div>
-                  </div>
-                </ElectricBorder>
-            </div>
-          </section>
-        </AnimatedSection>
-
-        {/* Container for the rest of the sections */}
-        <div className="container mx-auto px-6">
-          <AnimatedSection>
-            <section id="skills" className="min-h-screen py-20 w-full">
-              <h2 className="text-4xl font-bold text-center mb-12 text-yellow-400">Yeteneklerim</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-6">
-                {/* Web Development Card */}
-                <ElectricBorder className="transform hover:scale-105 transition-all duration-300">
-                  <div className="bg-gray-800 rounded-lg p-8 h-80 flex flex-col">
-                    <h3 className="text-3xl font-bold text-yellow-400 mb-6 text-center h-20 flex items-center justify-center">Web Development</h3>
-                    <ul className="text-gray-300 space-y-3 text-lg text-center flex-grow flex flex-col justify-center">
-                      <li>JavaScript (ES6+)</li>
-                      <li>TypeScript</li>
-                      <li>React & Next.js</li>
-                      <li>HTML5 & CSS3</li>
-                      <li>Tailwind CSS</li>
-                    </ul>
-                  </div>
-                </ElectricBorder>
-                {/* Mobile Development Card */}
-                <ElectricBorder className="transform hover:scale-105 transition-all duration-300">
-                  <div className="bg-gray-800 rounded-lg p-8 h-80 flex flex-col">
-                    <h3 className="text-3xl font-bold text-yellow-400 mb-6 text-center h-20 flex items-center justify-center">Mobile Development</h3>
-                    <ul className="text-gray-300 space-y-3 text-lg text-center flex-grow flex flex-col justify-center">
-                      <li>React Native</li>
-                      <li>Flutter (Dart)</li>
-                      <li>Swift / Kotlin (Native)</li>
-                    </ul>
-                  </div>
-                </ElectricBorder>
-                {/* Backend Development Card */}
-                <ElectricBorder className="transform hover:scale-105 transition-all duration-300">
-                  <div className="bg-gray-800 rounded-lg p-8 h-80 flex flex-col">
-                    <h3 className="text-3xl font-bold text-yellow-400 mb-6 text-center h-20 flex items-center justify-center">Backend Development</h3>
-                    <ul className="text-gray-300 space-y-3 text-lg text-center flex-grow flex flex-col justify-center">
-                      <li>Node.js (Express)</li>
-                      <li>Python (Flask/Django)</li>
-                      <li>RESTful APIs</li>
-                      <li>Databases (SQL/NoSQL)</li>
-                    </ul>
-                  </div>
-                </ElectricBorder>
-              </div>
-            </section>
-          </AnimatedSection>
-
-        </div>
-      </main>
+          </div>
+        </section>
+      </AnimatedSection>
 
       {/* Footer */}
-      <footer id="footer" className="bg-gray-800 w-full">
-        <div className="container mx-auto px-6">
-            <div className="py-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
-              {/* Left Side */}
-              <div>
-                <h3 className="text-2xl font-bold text-yellow-400">Yusuf Varış</h3>
-                <p className="text-gray-400">Yazılım Geliştirici</p>
-              </div>
-              {/* Right Side */}
-              <div>
-                <ul className="flex space-x-6">
-                  <li><a href="#" className="hover:text-yellow-400 transition-colors">Hizmetler</a></li>
-                  <li><a href="mailto:email@example.com" className="hover:text-yellow-400 transition-colors">İletişim</a></li>
-                </ul>
-              </div>
+      <footer className="bg-gray-800 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-yellow-400 mb-4">Yusuf</div>
+            <div className="text-gray-400 mb-4">
+              <p>© 2024 Yusuf. Tüm hakları saklıdır.</p>
             </div>
+            <div className="flex justify-center space-x-6">
+              <ul className="flex space-x-6 text-sm">
+                <li><a href="#home" className="hover:text-yellow-400 transition-colors">Ana Sayfa</a></li>
+                <li><a href="#about" className="hover:text-yellow-400 transition-colors">Hakkımda</a></li>
+                <li><a href="#projects" className="hover:text-yellow-400 transition-colors">Projelerim</a></li>
+                <li><a href="#contact" className="hover:text-yellow-400 transition-colors">İletişim</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
