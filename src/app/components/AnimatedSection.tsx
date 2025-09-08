@@ -19,7 +19,7 @@ export default function AnimatedSection({ children }: AnimatedSectionProps) {
       {
         root: null,
         rootMargin: '0px',
-        threshold: 0.1, // Trigger when 10% of the section is visible
+        threshold: 0.3, // Trigger when 30% of the section is visible
       }
     );
 

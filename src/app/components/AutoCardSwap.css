@@ -1,0 +1,37 @@
+.auto-card-swap-container {
+  position: relative;
+  perspective: 900px;
+  overflow: visible;
+}
+
+.auto-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 12px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(251, 191, 36, 0.1) 100%);
+  backdrop-filter: blur(10px);
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .auto-card-swap-container {
+    transform: scale(0.75) translate(25%, 25%);
+  }
+}
+
+@media (max-width: 480px) {
+  .auto-card-swap-container {
+    transform: scale(0.55) translate(25%, 25%);
+  }
+}

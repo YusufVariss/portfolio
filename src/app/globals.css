@@ -28,3 +28,92 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes borderAnimation {
+  0% {
+    border-image: linear-gradient(0deg, #facc15, #facc15, transparent, transparent) 1;
+  }
+  25% {
+    border-image: linear-gradient(90deg, #facc15, #facc15, transparent, transparent) 1;
+  }
+  50% {
+    border-image: linear-gradient(180deg, #facc15, #facc15, transparent, transparent) 1;
+  }
+  75% {
+    border-image: linear-gradient(270deg, #facc15, #facc15, transparent, transparent) 1;
+  }
+  100% {
+    border-image: linear-gradient(360deg, #facc15, #facc15, transparent, transparent) 1;
+  }
+}
+
+.skill-card {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.skill-card:hover {
+  border: 2px solid #facc15;
+  animation: borderAnimation 2s linear infinite;
+}
+
+.project-card {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  border: 2px solid #facc15;
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.4), 
+              0 0 25px rgba(250, 204, 21, 0.2), 
+              inset 0 0 10px rgba(250, 204, 21, 0.1);
+  transform: scale(1.05);
+}
+
+@keyframes textPressure {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotateY(180deg) translateZ(-100px);
+    text-shadow: 0 0 0 transparent;
+  }
+  30% {
+    opacity: 0.7;
+    transform: scale(0.8) rotateY(90deg) translateZ(-50px);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  70% {
+    opacity: 0.9;
+    transform: scale(1.1) rotateY(10deg) translateZ(10px);
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5),
+                 -2px -2px 4px rgba(255, 255, 255, 0.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg) translateZ(0);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4),
+                 -1px -1px 2px rgba(255, 255, 255, 0.1),
+                 inset 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.split-text {
+  perspective: 1000px;
+}
+
+.split-text span {
+  display: inline-block;
+  opacity: 0;
+  animation: textPressure 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  transform-origin: center center;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4),
+               -1px -1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.split-text span:hover {
+  color: #facc15;
+  transform: scale(1.2) translateZ(20px) rotateY(-10deg);
+  text-shadow: 5px 5px 15px rgba(250, 204, 21, 0.6),
+               -2px -2px 5px rgba(255, 255, 255, 0.3),
+               0 0 20px rgba(250, 204, 21, 0.4);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
