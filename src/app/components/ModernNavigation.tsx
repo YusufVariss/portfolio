@@ -19,12 +19,23 @@ const navItems: NavItem[] = [
 
 const ModernNavigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [currentSection, setCurrentSection] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 50);
+      
+      // Hide/show navbar based on scroll direction
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
       
       // Determine current section
       const sections = ['home', 'about', 'projects', 'contact'];
@@ -62,8 +73,11 @@ const ModernNavigation = () => {
           isScrolled ? 'scale-95' : 'scale-100'
         }`}
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
+        animate={{ 
+          opacity: isVisible ? 1 : 0, 
+          y: isVisible ? 0 : -50 
+        }}
+        transition={{ duration: 0.3 }}
       >
         <div className="hidden md:flex items-center bg-black/10 backdrop-blur-md border border-white/20 rounded-full px-2 py-2 shadow-2xl">
           {/* Logo */}
@@ -129,8 +143,11 @@ const ModernNavigation = () => {
               : 'bg-transparent'
           }`}
           initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          animate={{ 
+            opacity: isVisible ? 1 : 0, 
+            y: isVisible ? 0 : -80 
+          }}
+          transition={{ duration: 0.3 }}
         >
           <div className="flex items-center justify-between px-6 py-4">
             <motion.a

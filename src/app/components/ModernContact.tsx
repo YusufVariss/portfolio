@@ -291,14 +291,8 @@ export default function ModernContact() {
     {
       icon: <FiMail />,
       title: "E-posta",
-      value: "yusuf@example.com",
-      href: "mailto:yusuf@example.com",
-    },
-    {
-      icon: <FiPhone />,
-      title: "Telefon",
-      value: "+90 555 123 45 67",
-      href: "tel:+905551234567",
+      value: "varisyusuff@gmail.com",
+      href: "mailto:varisyusuff@gmail.com",
     },
     {
       icon: <FiMapPin />,
@@ -310,13 +304,13 @@ export default function ModernContact() {
   const socialLinks = [
     {
       icon: <FiGithub />,
-      href: "https://github.com",
+      href: "https://github.com/YusufVariss",
       label: "GitHub",
       color: "gray",
     },
     {
       icon: <FiLinkedin />,
-      href: "https://linkedin.com",
+      href: "https://www.linkedin.com/in/yusufvaris/",
       label: "LinkedIn", 
       color: "blue",
     },
@@ -387,6 +381,12 @@ export default function ModernContact() {
               </div>
             </motion.div>
 
+          </div>
+
+          {/* Right Side - Contact Form */}
+          <div className="space-y-8">
+            <ContactForm />
+            
             {/* Availability Status */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -406,50 +406,8 @@ export default function ModernContact() {
               </p>
             </motion.div>
           </div>
-
-          {/* Right Side - Contact Form */}
-          <ContactForm />
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="text-center mt-20"
-        >
-          <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 backdrop-blur-md rounded-2xl p-8 border border-white/10">
-            <h3 className="text-2xl font-bold text-yellow-400 mb-4">
-              Bir Proje Planınız mı Var?
-            </h3>
-            <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-              Web uygulaması, mobil uygulama veya API geliştirme konularında yardımcı olabilirim. 
-              Projenizi hayata geçirmek için hemen iletişime geçelim!
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.a
-                href="mailto:yusuf@example.com"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold py-4 px-8 rounded-full hover:shadow-lg hover:shadow-yellow-400/25 transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FiMail />
-                Hemen E-posta Gönder
-              </motion.a>
-              <motion.a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-yellow-400 text-yellow-400 font-bold py-4 px-8 rounded-full hover:bg-yellow-400 hover:text-black transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FiLinkedin />
-                LinkedIn'den Bağlan
-              </motion.a>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

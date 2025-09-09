@@ -9,19 +9,19 @@ const ModernFooter = () => {
   const socialLinks = [
     {
       icon: <FiGithub />,
-      href: "https://github.com",
+      href: "https://github.com/YusufVariss",
       label: "GitHub",
       color: "hover:text-gray-400",
     },
     {
       icon: <FiLinkedin />,
-      href: "https://linkedin.com",
+      href: "https://www.linkedin.com/in/yusufvaris/",
       label: "LinkedIn",
       color: "hover:text-blue-400",
     },
     {
       icon: <FiMail />,
-      href: "mailto:yusuf@example.com",
+      href: "mailto:varisyusuff@gmail.com",
       label: "Email",
       color: "hover:text-yellow-400",
     },
@@ -162,7 +162,7 @@ const ModernFooter = () => {
                 </div>
                 <div className="flex items-center gap-2 text-gray-400">
                   <FiCode size={16} />
-                  <span>TypeScript</span>
+                  <span>JavaScript</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-400">
                   <FiCode size={16} />
@@ -173,19 +173,6 @@ const ModernFooter = () => {
                   <span>MongoDB & SQL</span>
                 </div>
               </div>
-              
-              <motion.div
-                className="mt-8 p-4 bg-gradient-to-r from-yellow-400/10 to-amber-500/10 rounded-lg border border-yellow-400/20"
-                whileHover={{ scale: 1.02 }}
-              >
-                <div className="flex items-center gap-2 text-yellow-400 mb-2">
-                  <FiCoffee />
-                  <span className="font-semibold">Yeni Projeler İçin Açık</span>
-                </div>
-                <p className="text-gray-400 text-sm">
-                  Freelance projeler için uygunum!
-                </p>
-              </motion.div>
             </motion.div>
           </div>
         </div>
@@ -202,13 +189,6 @@ const ModernFooter = () => {
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
                 <span>© {currentYear} Yusuf Varış. Tüm hakları saklıdır.</span>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  <FiHeart className="text-red-400" size={16} />
-                </motion.div>
-                <span>ile geliştirildi</span>
               </motion.div>
 
               {/* Back to top button */}

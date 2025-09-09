@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
-import { FiExternalLink, FiGithub, FiCode, FiLayers, FiZap, FiUsers } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiExternalLink, FiChevronLeft, FiChevronRight, FiImage, FiInfo, FiCode } from "react-icons/fi";
 
 interface Project {
   id: number;
@@ -12,6 +12,7 @@ interface Project {
   technologies: string[];
   category: string;
   image: string;
+  images?: string[]; // Proje görselleri için
   demoUrl?: string;
   githubUrl?: string;
   featured: boolean;
@@ -25,376 +26,321 @@ interface Project {
 const projectsData: Project[] = [
   {
     id: 1,
-    title: "E-Commerce Platform",
-    description: "Modern ve kullanıcı dostu e-ticaret platformu",
-    longDescription: "Tam özellikli e-ticaret platformu. Ürün yönetimi, sepet sistemi, ödeme entegrasyonu ve admin paneli ile birlikte gelir. Responsive tasarım ve performans odaklı geliştirme.",
-    technologies: ["Next.js", "TypeScript", "MongoDB", "Stripe", "Tailwind CSS"],
-    category: "Web Development",
-    image: "🛍️",
-    demoUrl: "https://demo.com",
-    githubUrl: "https://github.com",
+    title: "Turkish Armed Forces Aircraft Recognition",
+    description: "Uçak tanıma ve görselleştirme sistemi",
+    longDescription: "Turkish Armed Forces Aircraft Identification and Visualization System developed with Python",
+    technologies: ["Python", "OpenCV", "Machine Learning", "TensorFlow", "NumPy"],
+    category: "AI & Machine Learning",
+    image: "✈️",
+    images: ["/project-images/aircraft1.jpg", "/project-images/aircraft2.jpg", "/project-images/aircraft3.jpg"],
+    githubUrl: "https://github.com/YusufVariss",
     featured: true,
     stats: {
       duration: "3 ay",
-      teamSize: "2 kişi", 
+      teamSize: "1 kişi", 
       complexity: "Kompleks"
     }
   },
   {
     id: 2,
-    title: "Task Management App",
-    description: "Takım çalışması için gelişmiş görev yönetimi",
-    longDescription: "Ekip çalışması için tasarlanmış görev yönetim uygulaması. Real-time güncellemeler, proje takibi, zaman yönetimi ve raporlama özellikleri.",
-    technologies: ["React", "Node.js", "Socket.io", "PostgreSQL", "Material-UI"],
-    category: "Web Application",
-    image: "✅",
-    demoUrl: "https://demo.com",
-    githubUrl: "https://github.com",
+    title: "3D Maze Game",
+    description: "Unity ve C# ile geliştirilmiş 3D labirent oyunu",
+    longDescription: "3D maze game developed with Unity and C#.",
+    technologies: ["Unity", "C#", "3D Modeling", "Game Development", "Visual Scripting"],
+    category: "Game Development",
+    image: "🎮",
+    images: ["/project-images/maze1.jpg", "/project-images/maze2.jpg", "/project-images/maze3.jpg"],
+    githubUrl: "https://github.com/YusufVariss",
     featured: true,
     stats: {
       duration: "2 ay",
-      teamSize: "3 kişi",
+      teamSize: "1 kişi",
       complexity: "Orta"
     }
   },
   {
     id: 3,
-    title: "Weather App",
-    description: "Gelişmiş hava durumu uygulaması",
-    longDescription: "7 günlük hava tahmini, interaktif haritalar, hava durumu uyarıları ve kişiselleştirilebilir arayüz ile modern hava durumu uygulaması.",
-    technologies: ["React Native", "TypeScript", "OpenWeather API", "Redux"],
+    title: "UniGO",
+    description: "Kullanıcı odaklı üniversite tercih uygulaması",
+    longDescription: "User-focused university preference application developed with Kotlin language using Android Studio",
+    technologies: ["Kotlin", "Android Studio", "Firebase", "Material Design", "Cloud Firestore"],
     category: "Mobile Development",
-    image: "🌤️",
-    demoUrl: "https://demo.com",
-    githubUrl: "https://github.com",
+    image: "🎓",
+    images: ["/project-images/unigo1.jpg", "/project-images/unigo2.jpg", "/project-images/unigo3.jpg"],
+    githubUrl: "https://github.com/YusufVariss",
     featured: false,
     stats: {
-      duration: "1 ay",
+      duration: "2 ay",
       teamSize: "1 kişi",
-      complexity: "Basit"
+      complexity: "Orta"
     }
   },
   {
     id: 4,
-    title: "Real Estate Platform",
-    description: "Gayrimenkul arama ve listeleme platformu",
-    longDescription: "Gayrimenkul alım-satım ve kiralama platformu. Gelişmiş arama filtreleri, harita entegrasyonu, sanal turlar ve müşteri iletişim sistemi.",
-    technologies: ["Vue.js", "Laravel", "MySQL", "Google Maps API", "AWS"],
+    title: "Inventory Management System",
+    description: "Modern Envanter Yönetim Sistemi",
+    longDescription: "Modern Inventory Management System – Built with ASP.NET Core Web API and React 18, following Clean Architecture and SOLID principles.",
+    technologies: ["ASP.NET Core", "React 18", "C#", "Entity Framework", "JWT"],
     category: "Web Development",
-    image: "🏠",
-    githubUrl: "https://github.com",
+    image: "📦",
+    images: ["/project-images/giriş.png", "/project-images/anasayfa.png", "/project-images/ürünler.png", "/project-images/kategoriler.png", "/project-images/raporlar.png", "/project-images/kullanıcılar.png", "/project-images/stok hareketleri.png"],
+    githubUrl: "https://github.com/YusufVariss",
     featured: true,
     stats: {
-      duration: "4 ay",
-      teamSize: "4 kişi",
-      complexity: "Kompleks"
-    }
-  },
-  {
-    id: 5,
-    title: "Portfolio Website",
-    description: "Interaktif ve modern portfolio sitesi",
-    longDescription: "Size özel tasarlanmış bu portfolio sitesi. Modern animasyonlar, responsive tasarım ve yüksek performans odaklı geliştirilmiştir.",
-    technologies: ["Next.js", "Framer Motion", "Tailwind CSS", "TypeScript"],
-    category: "Web Design",
-    image: "💼",
-    demoUrl: "https://current-site.com",
-    githubUrl: "https://github.com",
-    featured: false,
-    stats: {
-      duration: "2 hafta",
+      duration: "3 ay",
       teamSize: "1 kişi",
-      complexity: "Orta"
-    }
-  },
-  {
-    id: 6,
-    title: "Chat Application",
-    description: "Real-time mesajlaşma uygulaması",
-    longDescription: "WebSocket teknolojisi ile real-time mesajlaşma. Grup sohbetleri, dosya paylaşımı, emoji desteği ve push notifications.",
-    technologies: ["React", "Socket.io", "Express", "MongoDB", "Redis"],
-    category: "Web Application", 
-    image: "💬",
-    demoUrl: "https://demo.com",
-    githubUrl: "https://github.com",
-    featured: false,
-    stats: {
-      duration: "6 hafta",
-      teamSize: "2 kişi",
-      complexity: "Orta"
+      complexity: "Kompleks"
     }
   }
 ];
 
-const categories = ["Tümü", "Web Development", "Web Application", "Mobile Development", "Web Design"];
 
-const ProjectCard = ({ project, isSelected, onSelect }: { 
+const ProjectCard = ({ project, index }: { 
   project: Project; 
-  isSelected: boolean; 
-  onSelect: (id: number | null) => void; 
+  index: number;
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [30, -30]);
-  const rotateY = useTransform(x, [-100, 100], [-30, 30]);
+  const [showDetailPanel, setShowDetailPanel] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const handleMouse = (event: React.MouseEvent) => {
-    if (!cardRef.current) return;
-    
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    x.set(event.clientX - centerX);
-    y.set(event.clientY - centerY);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  const getComplexityColor = (complexity: string) => {
-    switch (complexity) {
-      case 'Basit': return 'text-green-400 bg-green-400/20';
-      case 'Orta': return 'text-yellow-400 bg-yellow-400/20';
-      case 'Kompleks': return 'text-red-400 bg-red-400/20';
-      default: return 'text-gray-400 bg-gray-400/20';
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (showDetailPanel) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${window.scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
     }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [showDetailPanel]);
+
+  // Use project images if available, otherwise show placeholder
+  const images = project.images && project.images.length > 0 ? project.images : [
+    `/api/placeholder/400/250?text=${encodeURIComponent(project.title)}-1`,
+    `/api/placeholder/400/250?text=${encodeURIComponent(project.title)}-2`,
+    `/api/placeholder/400/250?text=${encodeURIComponent(project.title)}-3`
+  ];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const getGradient = (index: number) => {
+    const gradients = [
+      'from-yellow-400 to-amber-500',
+      'from-blue-500 to-blue-600', 
+      'from-purple-500 to-pink-500',
+      'from-green-500 to-emerald-500',
+      'from-orange-500 to-red-500',
+      'from-cyan-500 to-teal-500'
+    ];
+    return gradients[index % gradients.length];
   };
 
   return (
     <motion.div
-      ref={cardRef}
-      className="perspective-1000"
-      onMouseMove={handleMouse}
-      onMouseLeave={handleMouseLeave}
-      layout
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
+      className="card-container group"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
     >
-      <motion.div
-        className={`relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-md rounded-2xl overflow-hidden cursor-pointer border transition-all duration-300 ${
-          project.featured ? 'border-yellow-400/30' : 'border-white/10'
-        } ${isSelected ? 'border-yellow-400/60 shadow-lg shadow-yellow-400/25' : 'hover:border-yellow-400/20'}`}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        onClick={() => onSelect(isSelected ? null : project.id)}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
-        {/* Featured Badge */}
-        {project.featured && (
-          <div className="absolute top-4 right-4 z-10 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-xs font-bold px-3 py-1 rounded-full">
-            FEATURED
-          </div>
-        )}
-
-        {/* Project Icon/Image */}
-        <div className="p-8 text-center">
-          <div className="text-6xl mb-4">{project.image}</div>
-          <h3 className="text-2xl font-bold text-white mb-2">{project.title}</h3>
-          <p className="text-gray-400 text-sm mb-4">{project.description}</p>
-          
-          {/* Tech Stack Preview */}
-          <div className="flex flex-wrap gap-2 justify-center mb-6">
-            {project.technologies.slice(0, 3).map((tech) => (
-              <span
-                key={tech}
-                className="px-3 py-1 bg-yellow-400/20 text-yellow-400 text-xs rounded-full"
-              >
-                {tech}
-              </span>
-            ))}
-            {project.technologies.length > 3 && (
-              <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">
-                +{project.technologies.length - 3}
-              </span>
-            )}
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="text-center">
-              <div className="text-yellow-400 text-sm font-semibold">{project.stats.duration}</div>
-              <div className="text-gray-500 text-xs">Süre</div>
-            </div>
-            <div className="text-center">
-              <div className="text-yellow-400 text-sm font-semibold">{project.stats.teamSize}</div>
-              <div className="text-gray-500 text-xs">Ekip</div>
-            </div>
-            <div className="text-center">
-              <div className={`text-xs font-semibold px-2 py-1 rounded-full ${getComplexityColor(project.stats.complexity)}`}>
-                {project.stats.complexity}
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-2 justify-center">
-            {project.demoUrl && (
-              <motion.a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-black text-sm font-medium rounded-lg hover:bg-yellow-300 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <FiExternalLink size={14} />
-                Demo
-              </motion.a>
-            )}
-            {project.githubUrl && (
-              <motion.a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-gray-700 text-white text-sm font-medium rounded-lg hover:bg-gray-600 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <FiGithub size={14} />
-                Kod
-              </motion.a>
-            )}
+      <div className="relative w-80 h-96 mx-auto bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-md border border-white/10 shadow-2xl rounded-2xl overflow-hidden">
+        {/* Face 1 - Content */}
+        <div className="face face1 absolute bottom-0 left-0 w-full h-full flex justify-center items-center p-5 box-border">
+          <div className="content text-center">
+            <h2 className="text-2xl font-bold text-white mb-4 m-0 p-0">{project.title}</h2>
+            <p className="text-base text-gray-300 leading-relaxed font-medium mb-6">
+              {project.description}
+            </p>
+            
+            <button
+              onClick={() => setShowDetailPanel(true)}
+              className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-medium rounded-lg hover:shadow-lg hover:shadow-yellow-400/25 transition-all duration-300"
+            >
+              Detayları Gör
+            </button>
           </div>
         </div>
 
-        {/* Selection Indicator */}
-        <AnimatePresence>
-          {isSelected && (
+        {/* Face 2 - Number with Hover Effect */}
+        <div className={`face face2 absolute bottom-0 left-0 w-full h-full flex justify-center items-center bg-gradient-to-br ${getGradient(index)} rounded-2xl transition-all duration-500 group-hover:h-16 group-hover:rounded-none group-hover:rounded-b-2xl`}>
+          {/* Light overlay */}
+          <div className="absolute top-0 left-0 w-1/2 h-full bg-white bg-opacity-10 rounded-l-2xl group-hover:rounded-bl-2xl group-hover:rounded-tl-none"></div>
+          
+          <h2 className="text-white font-bold text-9xl transition-all duration-500 group-hover:text-3xl text-shadow-lg m-0 p-0 drop-shadow-md">
+            {String(index + 1).padStart(2, '0')}
+          </h2>
+        </div>
+      </div>
+
+      {/* Detail Panel Modal */}
+      <AnimatePresence>
+        {showDetailPanel && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowDetailPanel(false)}
+            onWheel={(e) => e.preventDefault()}
+            onTouchMove={(e) => e.preventDefault()}
+            style={{ overscrollBehavior: 'none' }}
+          >
             <motion.div
-              className="absolute inset-0 border-2 border-yellow-400 rounded-2xl pointer-events-none"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-            />
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const ProjectDetail = ({ project, onClose }: { project: Project | null; onClose: () => void }) => {
-  if (!project) return null;
-
-  return (
-    <motion.div
-      className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-md rounded-2xl p-8 border border-yellow-400/30 shadow-2xl"
-      initial={{ opacity: 0, x: 100 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 100 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="flex justify-between items-start mb-6">
-        <div className="flex items-center gap-4">
-          <div className="text-4xl">{project.image}</div>
-          <div>
-            <h3 className="text-3xl font-bold text-yellow-400">{project.title}</h3>
-            <p className="text-gray-400">{project.category}</p>
-          </div>
-        </div>
-        <button
-          onClick={onClose}
-          className="text-yellow-400 hover:text-yellow-300 text-2xl"
-        >
-          ×
-        </button>
-      </div>
-
-      <div className="space-y-6">
-        <div>
-          <h4 className="text-lg font-semibold text-yellow-400 mb-3">Proje Detayları</h4>
-          <p className="text-gray-300 leading-relaxed">{project.longDescription}</p>
-        </div>
-
-        <div>
-          <h4 className="text-lg font-semibold text-yellow-400 mb-3">Kullanılan Teknolojiler</h4>
-          <div className="flex flex-wrap gap-3">
-            {project.technologies.map((tech) => (
-              <span
-                key={tech}
-                className="px-4 py-2 bg-gradient-to-r from-blue-400/20 to-purple-400/20 border border-blue-400/30 text-blue-300 rounded-full text-sm"
+              onClick={(e) => e.stopPropagation()}
+              onWheel={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              className="bg-gradient-to-br from-gray-800/95 to-gray-900/95 backdrop-blur-md border border-white/10 rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowDetailPanel(false)}
+                className="absolute top-4 right-4 z-10 text-gray-400 hover:text-white text-2xl bg-black/50 rounded-full w-8 h-8 flex items-center justify-center"
               >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </div>
+                ×
+              </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-black/20 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <FiZap className="text-yellow-400" />
-              <span className="text-yellow-400 font-semibold">Süre</span>
-            </div>
-            <p className="text-white">{project.stats.duration}</p>
-          </div>
-          
-          <div className="bg-black/20 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <FiUsers className="text-yellow-400" />
-              <span className="text-yellow-400 font-semibold">Ekip Büyüklüğü</span>
-            </div>
-            <p className="text-white">{project.stats.teamSize}</p>
-          </div>
-          
-          <div className="bg-black/20 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <FiLayers className="text-yellow-400" />
-              <span className="text-yellow-400 font-semibold">Karmaşıklık</span>
-            </div>
-            <p className="text-white">{project.stats.complexity}</p>
-          </div>
-        </div>
+              {/* Image Carousel Section - Top Half */}
+              <div className="relative h-80 bg-gray-900 overflow-hidden">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentImageIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center"
+                  >
+                    {project.images && project.images.length > 0 ? (
+                      <img
+                        src={images[currentImageIndex]}
+                        alt={`${project.title} - Görsel ${currentImageIndex + 1}`}
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          // If image fails to load, show placeholder
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : null}
+                    <div className={`text-center text-gray-300 ${project.images && project.images.length > 0 ? 'hidden' : ''}`}>
+                      <div className="text-6xl mb-4">{project.image}</div>
+                      <div className="text-lg font-medium">{project.title}</div>
+                      <div className="text-sm text-gray-400 mt-2">Proje Görseli {currentImageIndex + 1}</div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
 
-        <div className="flex gap-4 pt-4">
-          {project.demoUrl && (
-            <motion.a
-              href={project.demoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-semibold rounded-lg hover:shadow-lg transition-all"
-              whileHover={{ scale: 1.05 }}
-            >
-              <FiExternalLink />
-              Canlı Demo
-            </motion.a>
-          )}
-          {project.githubUrl && (
-            <motion.a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-3 border border-yellow-400 text-yellow-400 font-semibold rounded-lg hover:bg-yellow-400 hover:text-black transition-all"
-              whileHover={{ scale: 1.05 }}
-            >
-              <FiGithub />
-              Kaynak Kodu
-            </motion.a>
-          )}
-        </div>
-      </div>
+                {/* Navigation Buttons */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition-colors"
+                    >
+                      <FiChevronLeft size={20} />
+                    </button>
+                    
+                    <button
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition-colors"
+                    >
+                      <FiChevronRight size={20} />
+                    </button>
+                  </>
+                )}
+
+                {/* Image Indicators */}
+                {images.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                    {images.map((_, imageIndex) => (
+                      <button
+                        key={imageIndex}
+                        onClick={() => setCurrentImageIndex(imageIndex)}
+                        className={`w-3 h-3 rounded-full transition-colors ${
+                          currentImageIndex === imageIndex ? 'bg-yellow-400' : 'bg-white/50'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Info Section - Bottom Half */}
+              <div className="p-8 overflow-y-auto max-h-96">
+                {/* Header */}
+                <div className="mb-6">
+                  <h2 className="text-3xl font-bold text-white mb-2">{project.title}</h2>
+                  <p className="text-yellow-400 text-lg">{project.category}</p>
+                  <p className="text-gray-300 mt-3 leading-relaxed">{project.longDescription}</p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-8">
+                  {/* Technologies */}
+                  <div>
+                    <h3 className="text-xl font-semibold text-yellow-400 mb-4">Kullanılan Teknolojiler</h3>
+                    <div className="grid grid-cols-1 gap-2">
+                      {project.technologies.map((tech) => (
+                        <div
+                          key={tech}
+                          className="flex items-center gap-3 px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
+                        >
+                          <FiCode size={16} className="text-yellow-400" />
+                          <span className="text-sm font-medium text-white">{tech}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Demo Button */}
+                  {project.demoUrl && (
+                    <div>
+                      <a
+                        href={project.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-amber-500 text-black px-6 py-3 rounded-lg hover:shadow-lg hover:shadow-yellow-400/25 transition-all duration-300 font-medium"
+                      >
+                        <FiExternalLink size={16} />
+                        Canlı Demo'yu Görüntüle
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
+
 
 export default function ModernProjects() {
-  const [selectedCategory, setSelectedCategory] = useState("Tümü");
-  const [selectedProject, setSelectedProject] = useState<number | null>(null);
-
-  const filteredProjects = selectedCategory === "Tümü" 
-    ? projectsData 
-    : projectsData.filter(project => project.category === selectedCategory);
-
-  const selectedProjectData = selectedProject 
-    ? projectsData.find(p => p.id === selectedProject) 
-    : null;
 
   return (
     <section id="projects" className="min-h-screen py-20 bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 relative overflow-hidden">
@@ -420,98 +366,18 @@ export default function ModernProjects() {
           </p>
         </motion.div>
 
-        {/* Category Filter */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap gap-3 justify-center mb-12"
-        >
-          {categories.map((category) => (
-            <motion.button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                selectedCategory === category
-                  ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20 border border-white/20'
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {category}
-            </motion.button>
+
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 justify-items-center">
+          {projectsData.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+            />
           ))}
-        </motion.div>
-
-        {/* Projects Layout */}
-        <div className="flex gap-8">
-          {/* Projects Grid */}
-          <motion.div 
-            className={`transition-all duration-500 ${
-              selectedProject ? 'w-1/2' : 'w-full'
-            }`}
-            layout
-          >
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-              layout
-            >
-              <AnimatePresence>
-                {filteredProjects.map((project) => (
-                  <ProjectCard
-                    key={project.id}
-                    project={project}
-                    isSelected={selectedProject === project.id}
-                    onSelect={setSelectedProject}
-                  />
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </motion.div>
-
-          {/* Project Detail Panel */}
-          <AnimatePresence>
-            {selectedProject && (
-              <motion.div
-                className="w-1/2"
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: "50%", opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                layout
-              >
-                <ProjectDetail
-                  project={selectedProjectData}
-                  onClose={() => setSelectedProject(null)}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.0 }}
-          className="text-center mt-20"
-        >
-          <h3 className="text-2xl font-bold text-yellow-400 mb-4">
-            Birlikte Çalışalım!
-          </h3>
-          <p className="text-gray-400 mb-8">
-            Projeniz için benimle iletişime geçin ve hayalinizdeki uygulamayı birlikte geliştirelim.
-          </p>
-          <motion.button
-            className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black font-bold py-4 px-8 rounded-full hover:shadow-lg hover:shadow-yellow-400/25 transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            İletişime Geç
-          </motion.button>
-        </motion.div>
       </div>
     </section>
   );
